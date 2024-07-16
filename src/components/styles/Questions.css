@@ -1,0 +1,88 @@
+.application_inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+}
+
+.application_form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.section h3 {
+  font-size: 15px;
+  text-align: center;
+}
+
+.question_input {
+  width: 100%;
+  background-color: rgb(246,246,246);
+  border: 1.5px solid black;
+  border-radius: 5px;
+  font-size: 15px;
+  padding: 3px 7px;
+  margin-top: 10px;
+}
+
+.section input:focus, .section textarea:focus {
+  outline: none;
+}
+
+.submit {
+  display: flex;
+  justify-content: center;
+}
+
+.submit-button {
+  border-radius: 10px;
+  border: 1.5px solid black;
+  background-color: rgb(246,246,246);
+  height: 45px;
+  width: 180px;
+  font-size: 20px;
+  margin-top: 15px;
+  cursor: pointer;
+  color: black;
+}
+
+.exercise_points_inner {
+  width: 100%;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exercise_points_inner h3 {
+  max-width: 80%;
+}
+
+.information_icon {
+  border: 1.5px solid black;
+  border-radius: 100px;
+  height: 22px;
+  width: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.more_information {
+  font-size: 15px;
+  border: 1.5px solid black;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 6px 0 3px 0;
+}
