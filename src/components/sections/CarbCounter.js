@@ -1,92 +1,155 @@
-import { useState, useEffect } from "react";
-import '../styles/CarbCounter.css';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { TailSpin } from 'react-loader-spinner';
 
-export const CarbCounter = ({ carbsEatenNumerical, setCarbsEatenNumerical }) => {
-  const [foods, setFoods] = useState([]);
-  const [selectedFood, setSelectedFood] = useState('');
-  const [weight, setWeight] = useState('');
-  const [meal, setMeal] = useState([]);
+export const CarbCounter = ({ setCarbsEatenNumerical }) => {
+  const [productName, setProductName] = useState('');
+  const [products, setProducts] = useState([]);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
+  const [consumedFoods, setConsumedFoods] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [totalCarbs, setTotalCarbs] = useState(0); 
+  const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    const fetchFoods = async () => {
-      try {
-        const response = await fetch('/foods');
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+  const searchProducts = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get('https://world.openfoodfacts.org/cgi/search.pl', {
+        params: {
+          search_terms: productName,
+          search_simple: 1,
+          json: 1,
+          page_size: 5, // Fetch only 5 products per page
+          page
         }
-        const data = await response.json();
-        setFoods(data.foods);
-      } catch (error) {
-        console.error('Error fetching foods:', error);
-      }
-    };
-    fetchFoods();
-  }, []);
+      });
 
-  const addToMeal = () => {
-    if (selectedFood && weight) {
-      setMeal([...meal, { food: selectedFood, weight }]);
-      setSelectedFood('');
-      setWeight('');
+      const productsData = response.data.products.map(product => {
+        const name = product.product_name || 'N/A';
+        const brands = product.brands || '';
+        const fullProductName = `${name}${brands ? ` - ${brands}` : ''}`;
+        const barcode = product.code || 'N/A';
+        return { fullProductName, barcode };
+      });
+
+      setProducts(prevProducts => [...prevProducts, ...productsData]);
+      setDisplayedProducts(prevDisplayedProducts => [...prevDisplayedProducts, ...productsData]);
+      setPage(prevPage => prevPage + 1); // Increase page number for the next fetch
+    } catch (error) {
+      setError('Error fetching products');
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const calculateCarbs = async () => {
+  const fetchProductDetails = async (barcode) => {
     try {
-      const carbsPromises = meal.map(async item => {
-        const response = await fetch('/calculate_carbs', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ food: item.food, weight: item.weight })
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+      const response = await axios.get(`https://world.openfoodfacts.net/api/v2/product/${barcode}`, {
+        params: {
+          fields: 'product_name,carbohydrates_100g'
         }
-
-        const data = await response.json();
-        return data.carbs;
       });
 
-      const carbsValues = await Promise.all(carbsPromises);
-      const totalCarbs = carbsValues.reduce((total, carbs) => total + carbs, 0);
-      const roundedTotalCarbs = Math.round(totalCarbs);
-      setCarbsEatenNumerical(roundedTotalCarbs);
+      const product = response.data.product;
+      return {
+        name: product.product_name,
+        carbohydrates: product.carbohydrates_100g
+      };
     } catch (error) {
-      console.error('Error calculating carbs:', error);
+      setError('Error fetching product details');
+      console.error('Error fetching product details:', error);
+      return null;
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setProducts([]);
+    setDisplayedProducts([]);
+    setPage(1);
+    searchProducts();
+  };
+
+  const handleProductClick = async (barcode) => {
+    const product = await fetchProductDetails(barcode);
+    if (product) {
+      const weight = prompt(`Enter the weight (in grams) of ${product.name} eaten:`);
+      if (weight && !isNaN(weight)) {
+        const carbs = (product.carbohydrates * weight) / 100;
+        setConsumedFoods([...consumedFoods, { name: product.name, weight, carbs }]);
+      }
+    }
+  };
+
+  const loadMoreProducts = () => {
+    searchProducts();
+  };
+
+  const calculateTotalCarbs = () => {
+    const total = consumedFoods.reduce((acc, food) => acc + food.carbs, 0);
+    setCarbsEatenNumerical(total); 
+    setTotalCarbs(total); 
   };
 
   return (
-    <div className='section food_eaten'>
-      <h3>What did you eat in the meal?</h3>
-      <div className='input_food_data'>
-        <div className="input_food_data_inner">
-          <label htmlFor="food">Food:</label>
-          <select className="food_selector" id="food" value={selectedFood} onChange={e => setSelectedFood(e.target.value)}>
-            <option value="" disabled>Select food</option>
-            {foods.map(food => (<option key={food} value={food}>{food}</option>))}
-          </select>
-        </div>
-        <div className="input_food_data_inner">
-          <label className="weight_selector" htmlFor="weight">Weight (g):</label>
-          <input className="weight" id="weight" value={weight} onChange={e => setWeight(e.target.value)} />
-        </div>
-      </div>
-
-      <div className='food_eaten_buttons'>
-        <button onClick={addToMeal}>Add to Meal</button>
-        <button onClick={calculateCarbs}>Calculate Carbs</button>
-      </div>
-
-      <ul className="food_list">
-        {meal.map((item, index) => (
-          <li key={index}>{item.food}: {item.weight}g</li>
-        ))}
-      </ul>
-      {carbsEatenNumerical !== null && <p>Total Carbs: {carbsEatenNumerical}g</p>}
+    <div>
+      <header className="App-header">
+        <h1>Open Food Facts Product Search</h1>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+            placeholder="Enter product name"
+          />
+          <button type="submit">Search</button>
+        </form>
+        {loading && (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+            <TailSpin color="#00BFFF" height={80} width={80} />
+          </div>
+        )}
+        {error && <p>{error}</p>}
+        {!loading && (
+          <div>
+            {displayedProducts.length > 0 && (
+              <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                <ul>
+                  {displayedProducts.map((product, index) => (
+                    <li key={index}>
+                      <span>{product.fullProductName}</span>
+                      <button onClick={() => handleProductClick(product.barcode)}>Select Product</button>
+                      <button onClick={() => window.open(`https://world.openfoodfacts.org/product/${product.barcode}`, '_blank')}>
+                        View Product
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                {products.length < 50 && (
+                  <button onClick={loadMoreProducts}>Load More</button>
+                )}
+              </div>
+            )}
+            {consumedFoods.length > 0 && (
+              <div>
+                <h2>Consumed Foods</h2>
+                <ul>
+                  {consumedFoods.map((food, index) => (
+                    <li key={index}>
+                      <span>{food.name} - Weight: {food.weight}g - Carbs: {food.carbs}g</span>
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={calculateTotalCarbs}>Calculate Total Carbs</button>
+                <p>Total Carbs: {totalCarbs}g</p>
+              </div>
+            )}
+          </div>
+        )}
+      </header>
     </div>
   );
 };

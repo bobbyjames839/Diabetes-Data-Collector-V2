@@ -4,7 +4,7 @@ import { CarbCounter } from './CarbCounter';
 
 export const Questions = () => {
   const [flicker, setFlicker] = useState(true);
-  const [carbsEatenNumerical, setCarbsEatenNumerical] = useState(null)
+  const [carbsEatenNumerical, setCarbsEatenNumerical] = useState(null);
 
   const toggleMoreInfo = () => {
     setFlicker(!flicker);
@@ -39,7 +39,7 @@ export const Questions = () => {
       "entry.370463474": formData.exercisePoints,
       "entry.831293466": formData.alcoholPoints,
       "entry.348402611": formData.exercisePointsAfter,
-      "entry.1377087367": carbsEatenNumerical
+      "entry.1377087367": formData.carbsEatenNumerical
     });
 
     const url = `${formUrl}?${params.toString()}`;
@@ -66,9 +66,9 @@ export const Questions = () => {
 
   return (
     <div className='application_inner'>
-      <CarbCounter carbsEatenNumerical = {carbsEatenNumerical} setCarbsEatenNumerical = {setCarbsEatenNumerical}/>
+      <CarbCounter setCarbsEatenNumerical={setCarbsEatenNumerical} />
       <form className='application_form' id="form">
-      <Question question='How much food have you eaten?' id='foodEaten' />
+        <Question question='How much food have you eaten?' id='foodEaten' />
         <Question question='How much insulin did you inject?' id='insulinInjected' />
         <Question question='What was your level before the meal?' id='levelBefore' />
         <Question question='What was your level 2 hours after the meal?' id='levelTwo' />
