@@ -16,7 +16,6 @@ export const Questions = () => {
 
   const submitData = () => {
     const formData = {
-      foodEaten: document.getElementById('foodEaten').value,
       insulinInjected: document.getElementById('insulinInjected').value,
       levelBefore: document.getElementById('levelBefore').value,
       levelTwo: document.getElementById('levelTwo').value,
