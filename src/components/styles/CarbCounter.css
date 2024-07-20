@@ -1,60 +1,249 @@
-.input_food_data {
+.carb_counter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.carb_counter_header {
   display: flex;
   align-items: center;
-  width: 80%;
+  margin-bottom: 15px;
+  width: 100%;
   justify-content: space-between;
-  margin: 15px 0 25px 0;
 }
 
-.input_food_data_inner {
+.carb_counter_title {
+  font-size: 15px;
+}
+
+.show_favourites_button {
+  width: 200px;
+  height: 28px;
+  font-size: 13px;
+  border-radius: 5px;
+  background-color: white;
+  border: 1.5px solid blue;
+  cursor: pointer;
+}
+
+.carb_counter_searcher {
   display: flex;
   align-items: center;
-  width: 50%;
+  width: 100%;
 }
 
-.food_selector {
-  width: 70%;
-  margin-left: 10px;
-  height: 30px;
+.carb_counter_searcher_input {
+  height: 35px;
+  width: 100%;
+  max-width: 1000px;
+  padding: 0 10px;
+  font-size: 15px;
+  border-radius: 5px;
+  border: 1.5px solid black;
 }
 
-.food_selector:focus {
+.carb_counter_searcher_input:focus {
   outline: none;
 }
 
-.weight {
-  width: 70%;
-  margin-left: 10px;
-  background-color: rgb(246,246,246);
-  border: 1.5px solid black;
+.search_carbs_button {
+  width: 100px;
+  height: 35px;
+  margin-left: 20px;
   border-radius: 5px;
-  font-size: 15px;
-  padding: 3px 7px;
+  cursor: pointer;
+  border: 1.5px solid black;
+  background-color: white;
 }
 
-.food_eaten_buttons {
+.carbs_error {
+  padding: 5px;
+  font-size: 12px;
+  background-color: red;
+  border-radius: 5px;
+  margin: 20px 0;
+}
+
+.loader {
+  margin-top: 20px;
+  position: relative;
+  width: 100%;
+  height: 6px;
+  border-radius: 5px;
+  background-color: white;
+  overflow: hidden;
+}
+
+.loader .line {
+  position: absolute;
+  width: 50%;
+  height: 6px;
+  border-radius: 5px;
+  background-color: rgb(157, 163, 255);
+  animation: line-bounce 1.5s infinite ease-in-out;
+}
+
+@keyframes line-bounce {
+  0% {
+    left: 0;
+  }
+  50% {
+    left: calc(50%);
+  }
+  100% {
+    left: 0;
+  }
+}
+
+.food_list_and_consumed {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.food_list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  width: 100%;
+  margin-top: 15px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.food_list::-webkit-scrollbar {
+  width: 4px; 
+}
+
+.food_list::-webkit-scrollbar-track {
+  background: #d8d8d8; 
+}
+
+.food_list::-webkit-scrollbar-thumb {
+  background: rgb(144, 134, 255);
+  border-radius: 10px; 
+}
+
+.food_item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgb(188, 188, 188);
+  padding: 8px 0;
+}
+
+.food_buttons {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.food_item_button {
+  padding: 5px;
+  margin: 0 2px;
+  border: 1.5px solid rgb(54, 54, 255);
+  cursor: pointer;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.load_more_foods {
+  margin-top: 10px;
+  width: 100px;
+  padding: 5px 0;
+  cursor: pointer;
+  border: 1.5px solid orange;
+  border-radius: 5px;
+  background: white;
+}
+
+.my_meal_title {
+  margin-top: 20px;
+  font-size: 15px;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.my_meal_list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.my_meal_item {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgb(188, 188, 188);
+}
+
+.my_meal_item_right {
   display: flex;
   align-items: center;
 }
 
-.food_eaten button {
-  margin: 0 10px;
-  padding: 6px 0;
-  width: 200px;
-  border-radius: 10px;
-  border: 1.5px solid black;
-  background-color: rgb(246,246,246);
+.my_meal_metric {
+  border: 1.5px solid green;
+  padding: 2px 5px;
+  border-radius: 5px;
+  margin: 0 5px;
+  font-size: 12px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete_food_item {
+  border: 1.5px solid red;
+  background-color: white;
+  padding: 2px 4px;
+  border-radius: 5px;
+  margin: 0 5px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: .3s;
-  font-size: 14px;
 }
 
-.food_eaten button:hover {
-  background-color: rgb(218, 218, 218);
+.delete_favourite {
+  border: 1.5px solid red;
+  background-color: white;
+  padding: 4px;
+  border-radius: 5px;
+  margin: 0 5px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-.food_list {
-  list-style: none;
-  text-align: center;
-  margin: 20px 0;
+.calculate_total_carbs {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.calculate_total_carbs_button {
+  margin-right: 10px;
+  padding: 5px;
+  cursor: pointer;
+  border: 1.5px solid orange;
+  border-radius: 5px;
+  background: white;
+}
+
+.total_carbs {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }

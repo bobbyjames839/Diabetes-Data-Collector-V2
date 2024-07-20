@@ -30,7 +30,7 @@ export const Questions = () => {
 
     const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfF2iyF_ZyY6MEgW0OCpSzb9Bg95Tr8CR15NpgZbyn6hJe-Cg/formResponse";
     const params = new URLSearchParams({
-      "entry.500461883": formData.foodEaten,
+      "entry.500461883": formData.carbsEatenNumerical,
       "entry.901867602": formData.insulinInjected,
       "entry.1878110065": formData.levelBefore,
       "entry.965549412": formData.levelTwo,
@@ -38,8 +38,7 @@ export const Questions = () => {
       "entry.868671801": formData.carbsTwo,
       "entry.370463474": formData.exercisePoints,
       "entry.831293466": formData.alcoholPoints,
-      "entry.348402611": formData.exercisePointsAfter,
-      "entry.1377087367": formData.carbsEatenNumerical
+      "entry.348402611": formData.exercisePointsAfter
     });
 
     const url = `${formUrl}?${params.toString()}`;
@@ -68,7 +67,6 @@ export const Questions = () => {
     <div className='application_inner'>
       <CarbCounter setCarbsEatenNumerical={setCarbsEatenNumerical} />
       <form className='application_form' id="form">
-        <Question question='How much food have you eaten?' id='foodEaten' />
         <Question question='How much insulin did you inject?' id='insulinInjected' />
         <Question question='What was your level before the meal?' id='levelBefore' />
         <Question question='What was your level 2 hours after the meal?' id='levelTwo' />
